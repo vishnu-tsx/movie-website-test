@@ -3,12 +3,14 @@
   padding: 20px 0;
   position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   width: 100%;
   z-index: 1000;
 }
 
 .navbar-container {
-  max-width: 1400px;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -21,12 +23,47 @@
   font-size: 28px;
   cursor: pointer;
   font-weight: bold;
+  white-space: nowrap;
+}
+
+/* Burger Menu - Hidden on desktop */
+.burger-menu {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  z-index: 1001;
+  background: transparent;
+  border: none;
+  padding: 5px;
+}
+
+.burger-menu span {
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+  margin: 3px 0;
+  transition: all 0.3s ease;
+  border-radius: 3px;
+}
+
+/* Burger menu animation when open */
+.burger-menu.open span:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.burger-menu.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-menu.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
 }
 
 .navbar-links {
   display: flex;
   list-style: none;
   gap: 30px;
+  margin: 0;
 }
 
 .navbar-link {
@@ -34,6 +71,7 @@
   cursor: pointer;
   font-size: 16px;
   transition: color 0.3s ease;
+  white-space: nowrap;
 }
 
 .navbar-link:hover {
@@ -60,21 +98,81 @@
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* Responsive Design */
+/* Tablet Responsive Design */
+@media (max-width: 1024px) {
+  .navbar-container {
+    padding: 0 30px;
+  }
+
+  .navbar-links {
+    gap: 20px;
+  }
+
+  .navbar-search input {
+    width: 180px;
+  }
+}
+
+/* Mobile Responsive Design */
 @media (max-width: 768px) {
   .navbar-container {
     padding: 0 20px;
   }
 
+  /* Show burger menu on mobile */
+  .burger-menu {
+    display: flex; /* Changed from none to flex */
+    order: 3; /* Ensure it appears on the right */
+  }
+
+  /* Hide desktop nav links, show mobile menu when active */
   .navbar-links {
-    gap: 15px;
+    position: fixed;
+    left: -100%;
+    top: 70px;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.98);
+    width: 100%;
+    text-align: center;
+    transition: left 0.3s ease;
+    gap: 0;
+    padding: 20px 0;
+    box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+    order: 4; /* Ensure menu is last */
+  }
+
+  .navbar-links.active {
+    left: 0;
   }
 
   .navbar-link {
-    font-size: 14px;
+    padding: 15px 0;
+    font-size: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .navbar-search input {
-    width: 150px;
+  .navbar-link:hover {
+    background-color: rgba(229, 9, 20, 0.1);
+  }
+
+  /* Hide search on mobile */
+  .navbar-search {
+    display: none;
+  }
+
+  /* Adjust logo order */
+  .navbar-logo {
+    order: 1;
+  }
+}
+
+/* Very small mobile screens */
+@media (max-width: 480px) {
+  .navbar-logo h2 {
+    font-size: 24px;
+  }
+
+  .navbar-container {
+    padding: 0 15px;
   }
 }

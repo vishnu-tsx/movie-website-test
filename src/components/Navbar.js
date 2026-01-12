@@ -10,7 +10,7 @@ export const Navbar = ({ siteName }) => {
   const favoritesCount = useSelector(selectFavoritesCount);
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setIsMobileMenuOpen((open) => !open);
   };
 
   return (
@@ -20,7 +20,7 @@ export const Navbar = ({ siteName }) => {
           <h2>{siteName || 'MovieHub'}</h2>
         </div>
 
-        <button 
+        <button
           className={`burger-menu ${isMobileMenuOpen ? 'menu-open-state' : ''}`}
           onClick={toggleMobileMenu}
           aria-label="Toggle menu"
@@ -32,7 +32,11 @@ export const Navbar = ({ siteName }) => {
 
         <ul className={`navbar-links ${isMobileMenuOpen ? 'active' : ''}`}>
           {navLinks.map((link) => (
-            <li key={link} className="navbar-link" onClick={() => setIsMobileMenuOpen(false)}>
+            <li
+              key={link}
+              className="navbar-link"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
               {link}
               {link === 'My List' && favoritesCount > 0 && (
                 <span className="favorites-badge">{favoritesCount}</span>

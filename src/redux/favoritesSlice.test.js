@@ -24,7 +24,9 @@ describe('favoritesSlice', () => {
   });
 
   it('should return initial state', () => {
-    expect(favoritesReducer(undefined, { type: 'unknown' })).toEqual(initialState);
+    expect(favoritesReducer(undefined, { type: 'unknown' })).toEqual(
+      initialState
+    );
   });
 
   it('should handle addFavorite', () => {
@@ -41,7 +43,8 @@ describe('favoritesSlice', () => {
 
   it('should handle removeFavorite', () => {
     let state = favoritesReducer(initialState, addFavorite(mockMovie));
-    state = favoritesReducer(state, removeFavorite('Test Movie'));
+    const movieKey = `${mockMovie.Title}::${mockMovie.Year}`;
+    state = favoritesReducer(state, removeFavorite(movieKey));
     expect(state.favorites).toHaveLength(0);
   });
 
@@ -63,7 +66,20 @@ describe('favoritesSlice', () => {
 
   it('should select if movie is favorite', () => {
     const state = { favorites: { favorites: [mockMovie] } };
-    expect(selectIsFavorite('Test Movie')(state)).toBe(true);
-    expect(selectIsFavorite('Other Movie')(state)).toBe(false);
+    const movieKey = `${mockMovie.Title}::${mockMovie.Year}`;
+    expect(selectIsFavorite(state, movieKey)).toBe(true);
+    expect(selectIsFavorite(state, 'Other::2024')).toBe(false);
+  });
+
+  describe('persistence integration', () => {
+    it('persists favorites via the store subscription', () => {
+      // Import store dynamically to ensure subscriber is active
+      const { store } = require('./store');
+      store.dispatch(addFavorite(mockMovie));
+
+      const saved = JSON.parse(localStorage.getItem('favorites'));
+      expect(saved).toHaveLength(1);
+      expect(saved[0].Title).toBe(mockMovie.Title);
+    });
   });
 });

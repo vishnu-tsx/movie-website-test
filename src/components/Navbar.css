@@ -1,5 +1,9 @@
 .navbar {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0) 100%
+  );
   padding: 20px 0;
   position: fixed;
   top: 0;
@@ -88,7 +92,6 @@
 }
 
 .navbar-link {
-  /* Add to existing styles */
   display: flex;
   align-items: center;
   gap: 5px;

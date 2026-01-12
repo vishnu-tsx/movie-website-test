@@ -3,17 +3,11 @@ import { createSlice } from '@reduxjs/toolkit';
 const loadFavoritesFromStorage = () => {
   try {
     const saved = localStorage.getItem('favorites');
-    return saved ? JSON.parse(saved) : [];
+    if (!saved) return [];
+    const parsed = JSON.parse(saved);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
     return [];
-  }
-};
-
-const saveFavoritesToStorage = (favorites) => {
-  try {
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-  } catch (error) {
-    console.error('Failed to save favorites:', error);
   }
 };
 
@@ -27,31 +21,36 @@ const favoritesSlice = createSlice({
   reducers: {
     addFavorite: (state, action) => {
       const movie = action.payload;
-      const exists = state.favorites.find((fav) => fav.Title === movie.Title);
-      
+      const key = `${movie.Title}::${movie.Year}`;
+      const exists = state.favorites.find(
+        (fav) => `${fav.Title}::${fav.Year}` === key
+      );
+
       if (!exists) {
         state.favorites.push(movie);
-        saveFavoritesToStorage(state.favorites);
       }
     },
     removeFavorite: (state, action) => {
-      const movieTitle = action.payload;
-      state.favorites = state.favorites.filter((fav) => fav.Title !== movieTitle);
-      saveFavoritesToStorage(state.favorites);
+      const movieKey = action.payload; // "Title::Year"
+      state.favorites = state.favorites.filter(
+        (fav) => `${fav.Title}::${fav.Year}` !== movieKey
+      );
     },
     clearAllFavorites: (state) => {
       state.favorites = [];
-      saveFavoritesToStorage([]);
     },
   },
 });
 
-export const { addFavorite, removeFavorite, clearAllFavorites } = favoritesSlice.actions;
+export const { addFavorite, removeFavorite, clearAllFavorites } =
+  favoritesSlice.actions;
 
 export const selectFavorites = (state) => state.favorites.favorites;
 export const selectFavoritesCount = (state) => state.favorites.favorites.length;
-export const selectIsFavorite = (movieTitle) => (state) => {
-  return state.favorites.favorites.some((fav) => fav.Title === movieTitle);
+export const selectIsFavorite = (state, movieKey) => {
+  return state.favorites.favorites.some(
+    (fav) => `${fav.Title}::${fav.Year}` === movieKey
+  );
 };
 
 export default favoritesSlice.reducer;

@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { useFavorites } from '../context/FavoritesContext';
-import PropTypes from 'prop-types';
-import './Navbar.css';
+import { useState } from "react";
+import { useFavorites } from "../context/FavoritesContext";
+import PropTypes from "prop-types";
+import "./Navbar.css";
 
 export const Navbar = ({ siteName }) => {
-  const navLinks = ['Home', 'Movies', 'TV Shows', 'My List'];
+  const navLinks = ["Home", "Movies", "TV Shows", "My List"];
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { favoritesCount } = useFavorites();
 
@@ -16,11 +16,11 @@ export const Navbar = ({ siteName }) => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-logo">
-          <h2>{siteName || 'MovieHub'}</h2>
+          <h2>{siteName || "MovieHub"}</h2>
         </div>
 
-        <button 
-          className={`burger-menu ${isMobileMenuOpen ? 'menu-open-state' : ''}`}
+        <button
+          className={`burger-menu ${isMobileMenuOpen ? "menu-open-state" : ""}`}
           onClick={toggleMobileMenu}
           aria-label="Toggle menu"
         >
@@ -29,15 +29,15 @@ export const Navbar = ({ siteName }) => {
           <span></span>
         </button>
 
-        <ul className={`navbar-links ${isMobileMenuOpen ? 'active' : ''}`}>
-          {navLinks.map((link, index) => (
-            <li 
-              key={link} 
-              className="navbar-link" 
+        <ul className={`navbar-links ${isMobileMenuOpen ? "active" : ""}`}>
+          {navLinks.map((link) => (
+            <li
+              key={link}
+              className="navbar-link"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               {link}
-              {link === 'My List' && favoritesCount > 0 && (
+              {link === "My List" && favoritesCount > 0 && (
                 <span className="favorites-badge">{favoritesCount}</span>
               )}
             </li>
@@ -57,5 +57,5 @@ Navbar.propTypes = {
 };
 
 Navbar.defaultProps = {
-  siteName: 'MovieHub',
+  siteName: "MovieHub",
 };

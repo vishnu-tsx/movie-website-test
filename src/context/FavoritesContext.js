@@ -1,40 +1,47 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from "react";
+import PropTypes from "prop-types";
 
 const FavoritesContext = createContext();
 
 export const useFavorites = () => {
   const context = useContext(FavoritesContext);
   if (!context) {
-    throw new Error('useFavorites must be used within FavoritesProvider');
+    throw new Error("useFavorites must be used within FavoritesProvider");
   }
   return context;
 };
 
+const getMovieKey = (movie) => movie?.imdbID ?? movie?.Title;
+
 export const FavoritesProvider = ({ children }) => {
   const [favorites, setFavorites] = useState(() => {
-    const saved = localStorage.getItem('favorites');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem("favorites");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      localStorage.removeItem("favorites");
+      return [];
+    }
   });
 
   useEffect(() => {
-    localStorage.setItem('favorites', JSON.stringify(favorites));
+    localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
   const addFavorite = (movie) => {
-    setFavorites((prev) => {
-      if (prev.find((fav) => fav.Title === movie.Title)) {
-        return prev;
-      }
-      return [...prev, movie];
-    });
+    const key = getMovieKey(movie);
+    if (!key) return;
+    setFavorites((prev) =>
+      prev.some((fav) => getMovieKey(fav) === key) ? prev : [...prev, movie]
+    );
   };
 
-  const removeFavorite = (movieTitle) => {
-    setFavorites((prev) => prev.filter((fav) => fav.Title !== movieTitle));
+  const removeFavorite = (movieKey) => {
+    setFavorites((prev) => prev.filter((fav) => getMovieKey(fav) !== movieKey));
   };
 
-  const isFavorite = (movieTitle) => {
-    return favorites.some((fav) => fav.Title === movieTitle);
+  const isFavorite = (movieKey) => {
+    return favorites.some((fav) => getMovieKey(fav) === movieKey);
   };
 
   const value = {
@@ -50,4 +57,8 @@ export const FavoritesProvider = ({ children }) => {
       {children}
     </FavoritesContext.Provider>
   );
+};
+
+FavoritesProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };

@@ -8,6 +8,11 @@ export const store = configureStore({
 });
 
 store.subscribe(() => {
-  const favorites = store.getState().favorites.favorites;
-  localStorage.setItem('favorites', JSON.stringify(favorites));
+  try {
+    if (typeof localStorage === 'undefined') return;
+    const favorites = store.getState().favorites.favorites;
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  } catch {
+    // ignore persistence failures
+  }
 });

@@ -72,9 +72,15 @@ describe('favoritesSlice', () => {
   });
 
   describe('persistence integration', () => {
+    beforeEach(() => {
+      localStorage.clear();
+      jest.resetModules();
+    });
+
     it('persists favorites via the store subscription', () => {
       // Import store dynamically to ensure subscriber is active
       const { store } = require('./store');
+      store.dispatch(clearAllFavorites());
       store.dispatch(addFavorite(mockMovie));
 
       const saved = JSON.parse(localStorage.getItem('favorites'));

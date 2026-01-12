@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const getMovieKey = (movie) => `${movie.Title}::${movie.Year}`;
+
 const loadFavoritesFromStorage = () => {
   try {
     const saved = localStorage.getItem('favorites');
@@ -21,10 +23,8 @@ const favoritesSlice = createSlice({
   reducers: {
     addFavorite: (state, action) => {
       const movie = action.payload;
-      const key = `${movie.Title}::${movie.Year}`;
-      const exists = state.favorites.find(
-        (fav) => `${fav.Title}::${fav.Year}` === key
-      );
+      const key = getMovieKey(movie);
+      const exists = state.favorites.find((fav) => getMovieKey(fav) === key);
 
       if (!exists) {
         state.favorites.push(movie);
@@ -33,7 +33,7 @@ const favoritesSlice = createSlice({
     removeFavorite: (state, action) => {
       const movieKey = action.payload; // "Title::Year"
       state.favorites = state.favorites.filter(
-        (fav) => `${fav.Title}::${fav.Year}` !== movieKey
+        (fav) => getMovieKey(fav) !== movieKey
       );
     },
     clearAllFavorites: (state) => {
@@ -48,9 +48,7 @@ export const { addFavorite, removeFavorite, clearAllFavorites } =
 export const selectFavorites = (state) => state.favorites.favorites;
 export const selectFavoritesCount = (state) => state.favorites.favorites.length;
 export const selectIsFavorite = (state, movieKey) => {
-  return state.favorites.favorites.some(
-    (fav) => `${fav.Title}::${fav.Year}` === movieKey
-  );
+  return state.favorites.favorites.some((fav) => getMovieKey(fav) === movieKey);
 };
 
 export default favoritesSlice.reducer;

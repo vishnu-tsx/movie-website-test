@@ -1,13 +1,16 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectFavoritesCount } from '../redux/favoritesSlice';
 import PropTypes from 'prop-types';
 import './Navbar.css';
 
 export const Navbar = ({ siteName }) => {
   const navLinks = ['Home', 'Movies', 'TV Shows', 'My List'];
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const favoritesCount = useSelector(selectFavoritesCount);
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
+    setIsMobileMenuOpen((open) => !open);
   };
 
   return (
@@ -17,7 +20,7 @@ export const Navbar = ({ siteName }) => {
           <h2>{siteName || 'MovieHub'}</h2>
         </div>
 
-        <button 
+        <button
           className={`burger-menu ${isMobileMenuOpen ? 'menu-open-state' : ''}`}
           onClick={toggleMobileMenu}
           aria-label="Toggle menu"
@@ -28,9 +31,16 @@ export const Navbar = ({ siteName }) => {
         </button>
 
         <ul className={`navbar-links ${isMobileMenuOpen ? 'active' : ''}`}>
-          {navLinks.map((link, index) => (
-            <li key={link} className="navbar-link" onClick={() => setIsMobileMenuOpen(false)}>
+          {navLinks.map((link) => (
+            <li
+              key={link}
+              className="navbar-link"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
               {link}
+              {link === 'My List' && favoritesCount > 0 && (
+                <span className="favorites-badge">{favoritesCount}</span>
+              )}
             </li>
           ))}
         </ul>
